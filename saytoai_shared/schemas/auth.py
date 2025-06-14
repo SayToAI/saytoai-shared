@@ -4,7 +4,7 @@ Handles email/password auth with verification codes.
 """
 
 import re
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator # type: ignore
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from ..constants import (

@@ -1,7 +1,7 @@
 # SayToAI Shared Package
 
 [![Version](https://img.shields.io/badge/version-0.0.1-blue.svg)](https://github.com/saytoai-org/saytoai-shared)
-[![Python](https://img.shields.io/badge/python-3.12+-green.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/python-3.11+-green.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-45%20passing-brightgreen.svg)](#testing)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A+-brightgreen.svg)](#code-quality)
@@ -74,8 +74,8 @@ pip install saytoai-shared
 git clone https://github.com/saytoai-org/saytoai-shared.git
 cd saytoai-shared
 
-# Ensure Python 3.12+
-python --version  # Should show Python 3.12.x
+# Ensure Python 3.11+
+python --version  # Should show Python 3.11.x
 
 # Install in development mode
 pip install -e ".[dev,testing]"
@@ -524,7 +524,7 @@ export const validatePhoneNumber = (phone: string): boolean => {
 - ✅ **voiceBot compatibility** - Payment system matches existing structure
 - ✅ **Comprehensive testing** - 45 tests with 100% pass rate
 - ✅ **Production ready** - Clean code, documentation, type hints
-- ✅ **Python 3.12 support** - Modern Python compatibility
+- ✅ **Python 3.11+ support** - Modern Python compatibility
 
 ### **Development Roadmap**
 - 🔄 **v0.1.0** - Enhanced fraud detection and ML integration

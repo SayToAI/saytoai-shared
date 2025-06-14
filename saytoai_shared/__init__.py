@@ -19,8 +19,8 @@ Architecture:
 - saytoai-admin-backend (FastAPI + Python) → Uses this package
 - saytoai-shared (This package) → Shared across all services
 
-Version: 0.0.1 (Released: 2025-06-14)
-Python: 3.12+
+Version: 0.0.1 (Released: 2025-06-15)
+Python: 3.11+
 License: MIT
 """
 

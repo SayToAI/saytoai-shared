@@ -30,7 +30,7 @@ Usage:
     )
 
 Version: 0.0.1
-Last Updated: 2025-06-14
+Last Updated: 2025-06-15
 """
 
 import re
