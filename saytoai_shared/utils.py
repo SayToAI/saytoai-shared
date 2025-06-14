@@ -1326,7 +1326,14 @@ def format_sms_message(template_key: str, **kwargs) -> str:
     format_values = {**default_values, **kwargs}
     
     try:
-        return template.format(**format_values)
+        message = template.format(**format_values)
+        
+        # Ensure message is not too long for SMS (160 characters limit)
+        if len(message) > 160:
+            # Truncate and add ellipsis if needed
+            message = message[:157] + "..."
+            
+        return message
     except KeyError:
         # Fallback if template variable is missing
         return f"SayToAI verification code: {kwargs.get('code', 'N/A')}"
@@ -2093,4 +2100,142 @@ def is_payment_amount_valid_for_provider(amount: int, provider: str) -> bool:
     if not config:
         return False
     
-    return config["min_amount"] <= amount <= config["max_amount"] 
+    return config["min_amount"] <= amount <= config["max_amount"]
+
+def format_alert_message(alerts: list, alert_type: str = "GENERAL", max_length: int = 4000) -> str:
+    """
+    Format alert messages for better readability in notifications.
+    
+    Args:
+        alerts: List of alert objects
+        alert_type: Type of alert (CRITICAL, WARNING, etc.)
+        max_length: Maximum message length
+        
+    Returns:
+        str: Formatted alert message
+    """
+    if not alerts:
+        return "No alerts to display"
+    
+    # Icon mapping for alert types
+    icons = {
+        "CRITICAL": "🚨",
+        "WARNING": "⚠️",
+        "INFO": "ℹ️",
+        "DATABASE": "🗄️",
+        "CACHE": "⚡",
+        "METRICS": "📊",
+        "LOGGING": "📋",
+        "SYSTEM": "🖥️",
+        "ADMIN": "🛠️",
+        "GENERAL": "ℹ️"
+    }
+    
+    icon = icons.get(alert_type.upper(), "ℹ️")
+    header = f"{icon} *{alert_type.upper()} ALERT*\n"
+    
+    if len(alerts) > 1:
+        header += f"*Alerts Count:* {len(alerts)} alerts\n\n"
+    else:
+        header += "\n"
+    
+    formatted_alerts = []
+    current_length = len(header)
+    
+    for index, alert in enumerate(alerts):
+        # Format individual alert
+        alert_text = ""
+        
+        if index > 0:
+            alert_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        
+        # Service info
+        service = alert.get('service', 'Unknown')
+        alert_text += f"*Service:* {service}\n"
+        
+        # Alert summary
+        summary = alert.get('summary', 'No summary available')
+        if len(summary) > 100:
+            summary = summary[:97] + "..."
+        alert_text += f"*Alert:* {summary}\n"
+        
+        # Severity
+        severity = alert.get('severity', 'unknown').upper()
+        alert_text += f"*Severity:* {severity}\n"
+        
+        # Timestamp
+        timestamp = alert.get('timestamp', 'Unknown')
+        alert_text += f"*Time:* {timestamp}\n"
+        
+        # Description (optional)
+        description = alert.get('description')
+        if description:
+            if len(description) > 200:
+                description = description[:197] + "..."
+            alert_text += f"*Description:* {description}\n"
+        
+        # Check if adding this alert would exceed max length
+        if current_length + len(alert_text) > max_length:
+            # Add truncation notice
+            remaining_count = len(alerts) - index
+            if remaining_count > 0:
+                truncation_notice = f"\n... and {remaining_count} more alert(s) (truncated)"
+                if current_length + len(truncation_notice) <= max_length:
+                    formatted_alerts.append(truncation_notice)
+            break
+        
+        formatted_alerts.append(alert_text)
+        current_length += len(alert_text)
+    
+    return header + "".join(formatted_alerts)
+
+def format_container_alert_message(container_names: list, alert_type: str, severity: str) -> str:
+    """
+    Format container alert messages to avoid repetition and improve readability.
+    
+    Args:
+        container_names: List of container names with alerts
+        alert_type: Type of alert (e.g., "high memory usage")
+        severity: Alert severity level
+        
+    Returns:
+        str: Formatted container alert message
+    """
+    if not container_names:
+        return "No container alerts"
+    
+    # Group similar containers
+    unique_containers = list(set(container_names))
+    container_count = len(container_names)
+    unique_count = len(unique_containers)
+    
+    icon = "🐳" if "container" in alert_type.lower() else "⚠️"
+    
+    if container_count == 1:
+        return f"{icon} *CONTAINER ALERT*\n\n*Container:* {container_names[0]}\n*Alert:* {alert_type}\n*Severity:* {severity.upper()}"
+    
+    # Multiple containers with same issue
+    message = f"{icon} *CONTAINER ALERT*\n\n*Alert:* {alert_type}\n*Severity:* {severity.upper()}\n*Affected Containers:* {container_count}"
+    
+    if unique_count != container_count:
+        message += f" ({unique_count} unique)"
+    
+    message += "\n\n*Containers:*\n"
+    
+    # List containers, but limit to avoid very long messages
+    max_containers_to_show = 10
+    containers_to_show = unique_containers[:max_containers_to_show]
+    
+    for container in containers_to_show:
+        # Count occurrences if there are duplicates
+        count = container_names.count(container)
+        if count > 1:
+            message += f"• {container} ({count}x)\n"
+        else:
+            message += f"• {container}\n"
+    
+    if unique_count > max_containers_to_show:
+        remaining = unique_count - max_containers_to_show
+        message += f"• ... and {remaining} more containers\n"
+    
+    return message 

@@ -459,10 +459,16 @@ SMS_VALIDATION_MESSAGES = {
 
 # SMS templates
 SMS_TEMPLATES = {
-    "verification_code": "SayToAI verification code: {code}. Valid for {minutes} minutes. Do not share this code.",
-    "welcome_sms": "Welcome to SayToAI! Your account has been successfully created.",
-    "password_reset": "SayToAI password reset code: {code}. Valid for {minutes} minutes.",
-    "login_notification": "New login to your SayToAI account from {device}. If this wasn't you, please secure your account."
+    "verification_code": "SayToAI code: {code}. Valid {minutes}min. Don't share.",
+    "welcome_sms": "Welcome to SayToAI! Account created successfully.",
+    "password_reset": "SayToAI reset: {code}. Valid {minutes}min.",
+    "login_notification": "SayToAI login from {device}. Secure account if not you.",
+    "alert_notification": "SayToAI Alert: {alert_type} - {summary}. Check dashboard.",
+    "critical_alert": "🚨 CRITICAL: {service} - {summary}",
+    "system_alert": "🖥️ SYSTEM: {alert_count} alerts. {summary}",
+    "container_alert": "🐳 CONTAINER: {container_count} affected. {alert_type}",
+    "database_alert": "🗄️ DB: {database} - {summary}",
+    "generic_alert": "{icon} {alert_type}: {summary}"
 }
 
 # Registration method types

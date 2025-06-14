@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-45%20passing-brightgreen.svg)](#testing)
 [![Code Quality](https://img.shields.io/badge/code%20quality-A+-brightgreen.svg)](#code-quality)
+[![Alerts](https://img.shields.io/badge/alert%20formatting-optimized-brightgreen.svg)](#recent-improvements)
 
 > **Production-ready shared library for the SayToAI ecosystem** 🚀
 
@@ -12,9 +13,38 @@ A comprehensive Python package containing reusable Pydantic models, constants, u
 
 ---
 
+## 📋 **Table of Contents**
+
+- [🏗️ Architecture Overview](#️-architecture-overview)
+- [🚀 Quick Start](#-quick-start)
+- [📦 Package Structure](#-package-structure)
+- [🔧 Core Components](#-core-components)
+- [🆕 Recent Improvements](#-recent-improvements)
+- [🧪 Testing](#-testing)
+- [🛠️ Development](#️-development)
+- [📚 API Reference](#-api-reference)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+---
+
 ## 🏗️ **Architecture Overview**
 
 The SayToAI ecosystem is a microservices architecture designed for scalable AI-powered voice and text processing:
+
+### **Service Ecosystem**
+
+| Service | Purpose | Technology | Domain | Status |
+|---------|---------|------------|--------|--------|
+| **saytoai-frontend** | Public user interface | React + TypeScript | www.saytoai.org | 🟢 Active |
+| **saytoai-backend** | Core business logic API | FastAPI + Python | api.saytoai.org | 🟢 Active |
+| **saytoai-bot** | Telegram bot interface | aiogram + Python | @saytoai_bot | 🟢 Active |
+| **saytoai-admin-frontend** | Admin dashboard | React + TypeScript | admin.saytoai.org | 🟢 Active |
+| **saytoai-admin-backend** | Admin API | FastAPI + Python | admin-api.saytoai.org | 🟢 Active |
+| **saytoai-shared** | **This package** | Python Library | PyPI/GitHub | ✅ **Production Ready** |
+| **saytoai-infra** | Infrastructure | Docker + Compose | - | 🟢 Active |
+
+### **Dependencies Flow**
 
 ```mermaid
 graph TB
@@ -47,18 +77,6 @@ graph TB
     INFRA --> ADMIN_API
     INFRA --> BOT
 ```
-
-### **Service Ecosystem**
-
-| Service | Purpose | Technology | Domain | Status |
-|---------|---------|------------|--------|--------|
-| **saytoai-frontend** | Public user interface | React + TypeScript | www.saytoai.org | 🟢 Active |
-| **saytoai-backend** | Core business logic API | FastAPI + Python | api.saytoai.org | 🟢 Active |
-| **saytoai-bot** | Telegram bot interface | aiogram + Python | @saytoai_bot | 🟢 Active |
-| **saytoai-admin-frontend** | Admin dashboard | React + TypeScript | admin.saytoai.org | 🟢 Active |
-| **saytoai-admin-backend** | Admin API | FastAPI + Python | admin-api.saytoai.org | 🟢 Active |
-| **saytoai-shared** | **This package** | Python Library | PyPI/GitHub | ✅ **Production Ready** |
-| **saytoai-infra** | Infrastructure | Docker + Compose | - | 🟢 Active |
 
 ---
 
@@ -111,10 +129,56 @@ print(f"SMS Code: {sms_code}")  # 6-digit code
 from saytoai_shared.utils import validate_payment_amount, format_payment_amount
 
 # Validate payment (amount in tiyin for UZS)
-payment_validation = validate_payment_amount(500000000, "UZS")  # 5,000,000 UZS
+payment_validation = validate_payment_amount(500000000, "UZS")
 if payment_validation["is_valid"]:
     formatted = format_payment_amount(500000000, "UZS")
     print(f"Payment: {formatted}")  # "5,000,000 UZS"
+```
+
+### **Alert Formatting Usage** (New!)
+
+```python
+from saytoai_shared.utils import format_alert_message, format_container_alert_message
+
+# Format system alerts
+alerts = [
+    {
+        "service": "postgres",
+        "summary": "High memory usage detected",
+        "severity": "warning",
+        "timestamp": "2025-01-14 16:23:36",
+        "description": "Memory usage is above 85% for more than 5 minutes"
+    }
+]
+
+formatted_alert = format_alert_message(alerts, "DATABASE")
+print(formatted_alert)
+# 🗄️ *DATABASE ALERT*
+# 
+# *Service:* postgres
+# *Alert:* High memory usage detected
+# *Severity:* WARNING
+# *Time:* 2025-01-14 16:23:36
+# *Description:* Memory usage is above 85% for more than 5 minutes
+
+# Format container alerts
+container_names = ["saytoai-redis", "saytoai-postgres", "saytoai-mongo"]
+container_alert = format_container_alert_message(
+    container_names, 
+    "high memory usage", 
+    "warning"
+)
+print(container_alert)
+# 🐳 *CONTAINER ALERT*
+# 
+# *Alert:* high memory usage
+# *Severity:* WARNING
+# *Affected Containers:* 3
+# 
+# *Containers:*
+# • saytoai-redis
+# • saytoai-postgres
+# • saytoai-mongo
 ```
 
 ---
@@ -122,16 +186,16 @@ if payment_validation["is_valid"]:
 ## 📦 **Package Structure**
 
 ```
-saytoai-shared/                    # Root directory (1.5MB)
+saytoai-shared/                    # Root directory
 ├── 📄 README.md                   # This comprehensive documentation
 ├── 📄 LICENSE                     # MIT License (2025)
 ├── ⚙️ pyproject.toml              # Modern Python project configuration
-├── 🚫 .gitignore                  # Git ignore rules
+├── 🚫 .gitignore                  # Git ignore rules (optimized)
 │
 ├── 📦 saytoai_shared/             # Main package (v0.0.1)
 │   ├── 🐍 __init__.py             # Package exports and public API
-│   ├── 📊 constants.py            # 739 lines - Constants, enums, configs
-│   ├── 🛠️ utils.py                # 2065 lines - 50+ utility functions
+│   ├── 📊 constants.py            # 793 lines - Constants, enums, configs
+│   ├── 🛠️ utils.py                # 2241 lines - 50+ utility functions
 │   ├── 🎭 prompts.py              # 826 lines - AI prompt templates
 │   ├── 📝 py.typed               # Type hints marker
 │   │
@@ -139,7 +203,7 @@ saytoai-shared/                    # Root directory (1.5MB)
 │   │   ├── 🐍 __init__.py         # Schema exports
 │   │   ├── 👤 user.py             # User profiles and preferences
 │   │   ├── 🔐 auth.py             # Authentication and registration
-│   │   ├── 💳 payments.py         # Payment processing (voiceBot compatible)
+│   │   ├── 💳 payments.py         # Payment processing
 │   │   ├── 📱 sms.py              # SMS verification workflows
 │   │   ├── 🎭 roles.py            # Role management and permissions
 │   │   ├── ⚙️ service.py          # Service configurations
@@ -157,19 +221,96 @@ saytoai-shared/                    # Root directory (1.5MB)
 ```
 
 **Package Statistics:**
-- 📊 **18 Python files** - Well-structured modular codebase
-- 📚 **2 Documentation files** - Comprehensive README + LICENSE
-- 💾 **1.5MB total size** - Efficient and lean package
+- 📊 **Clean structure** - Cache directories removed, optimized for production
+- 📚 **Comprehensive documentation** - Updated with latest features
+- 💾 **Lean package size** - Unnecessary files removed
 - ✅ **45 passing tests** - 100% test coverage for core functionality
-- 🧹 **0 linting errors** - Clean, professional code quality
+- 🧹 **0 linting errors** - Professional code quality maintained
 
 ---
 
-## 🧪 **Testing Environment**
+## 🔧 **Core Components**
 
-### **Test Coverage**
+### **1. Constants (`constants.py`)**
+- **Service Tiers**: FREE, PREMIUM, ENTERPRISE subscription levels
+- **Payment Systems**: PayMe, Click, SMS payment configurations
+- **User Roles**: USER, ADMIN, MODERATOR with permissions
+- **SMS Templates**: Optimized for 160-character SMS limit
+- **API Limits**: Rate limiting and quota configurations
 
-Our comprehensive test suite ensures reliability and maintainability:
+### **2. Utilities (`utils.py`)**
+- **Phone & SMS**: `validate_phone_number`, `generate_sms_code`, `format_sms_message`
+- **Alert Formatting**: `format_alert_message`, `format_container_alert_message` (NEW!)
+- **Payment Processing**: `validate_payment_amount`, `format_payment_amount`
+- **User Management**: `sanitize_username`, `get_user_flow_state`
+- **Security**: Email validation, fraud prevention utilities
+
+### **3. Schemas (`schemas/`)**
+- **User Management**: User profiles, preferences, credits, subscriptions
+- **Authentication**: Registration, login, password reset workflows
+- **Payments**: Payment transactions, billing, subscription management
+- **SMS Services**: Verification codes, delivery methods, workflows
+- **Security**: Fraud prevention, risk assessment, rate limiting
+
+### **4. Services (`services/`)**
+- **SMS Service**: Dual delivery (Telegram + External SMS), workflow management
+- **Notification Service**: Multi-channel alerts with improved formatting
+
+---
+
+## 🆕 **Recent Improvements**
+
+### **🚨 Alert System Optimization (January 2025)**
+
+We've completely overhauled the alert formatting system to fix garbled notifications and improve readability:
+
+#### **Fixed Issues:**
+- ❌ **Before**: `containercontainercontainercontainer...` (garbled text)
+- ✅ **After**: Clean, structured alerts with proper separation
+
+#### **New Features:**
+- 🎨 **Visual Icons**: Different emojis for each alert type (🚨 Critical, 🗄️ Database, 🐳 Container)
+- 📊 **Smart Grouping**: Container alerts are intelligently grouped and summarized
+- 📱 **Multi-Platform**: Optimized for Telegram (4000 chars), SMS (160 chars), Email
+- 🔄 **Fallback Support**: Graceful handling of missing data with defaults
+
+#### **Alert Types:**
+```python
+ALERT_ICONS = {
+    "CRITICAL": "🚨",     # Critical system alerts
+    "DATABASE": "🗄️",     # Database services
+    "CONTAINER": "🐳",    # Container management
+    "CACHE": "⚡",        # Redis, memcached
+    "METRICS": "📊",      # Prometheus, Grafana
+    "LOGGING": "📋",      # Loki, ELK stack
+    "SYSTEM": "🖥️",       # Host system health
+    "ADMIN": "🛠️",        # Admin tools
+    "GENERAL": "ℹ️"       # General notifications
+}
+```
+
+### **📱 SMS Message Optimization**
+
+#### **Enhanced Templates:**
+```python
+SMS_TEMPLATES = {
+    "verification_code": "SayToAI code: {code}. Valid {minutes}min. Don't share.",
+    "critical_alert": "🚨 CRITICAL: {service} - {summary}",
+    "container_alert": "🐳 CONTAINER: {container_count} affected. {alert_type}",
+    "database_alert": "🗄️ DB: {database} - {summary}",
+}
+```
+
+#### **Smart Truncation:**
+- **Automatic Length Control**: Messages truncated to 160 characters for SMS
+- **Essential Information Priority**: Critical details preserved when truncating
+- **Ellipsis Indication**: Clear indication when content is truncated
+
+---
+
+## 🧪 **Testing**
+
+### **Run Tests**
 
 ```bash
 # Run all tests
@@ -184,7 +325,7 @@ pytest tests/test_user.py -v       # User schema validation
 pytest tests/test_utils.py -v      # Utility function testing
 ```
 
-### **Test Categories**
+### **Test Coverage Overview**
 
 | Test File | Purpose | Tests | Coverage |
 |-----------|---------|-------|----------|
@@ -200,401 +341,193 @@ pytest tests/test_utils.py -v      # Utility function testing
 ruff check saytoai_shared/          # Linting (0 errors)
 mypy saytoai_shared/                # Type checking
 black saytoai_shared/               # Code formatting
-
-# Security scanning
-bandit -r saytoai_shared/           # Security vulnerabilities
-
-# Import sorting
-isort saytoai_shared/               # Import organization
 ```
 
 ---
 
-## 🔧 **Core Components**
+## 🛠️ **Development**
 
-### **1. Constants & Configuration (`constants.py`)**
-
-Centralized configuration extracted from the original SayToAI project:
-
-#### **Service Configuration**
-```python
-from saytoai_shared.constants import (
-    SERVICE_TIERS,           # free, basic, standard, premium
-    SUBSCRIPTION_TYPES,      # User subscription types
-    INITIAL_FREE_CREDITS,    # 50 credits for new users
-    SUPPORTED_LANGUAGES,     # en, uz, ru, etc.
-    USER_ROLES              # admin, user, moderator
-)
-```
-
-#### **Payment System (voiceBot Compatible)**
-```python
-from saytoai_shared.constants import (
-    PAYMENT_PROVIDERS,       # Payme, Click configurations
-    PAYMENT_TARIFFS,         # basic: 1,000 UZS = 60 credits
-    PAYMENT_LIMITS,          # Min/max amounts in tiyin
-    PAYMENT_ERROR_CODES      # Standardized error handling
-)
-
-# Example: Get tariff information
-basic_tariff = PAYMENT_TARIFFS["basic"]
-print(f"Price: {basic_tariff['amount']} tiyin")  # 100000 (1,000 UZS)
-print(f"Credits: {basic_tariff['credits']}")     # 60
-```
-
-#### **SMS & Communication**
-```python
-from saytoai_shared.constants import (
-    SMS_CONFIGURATION,       # Delivery methods, costs (95 som/SMS)
-    SMS_WORKFLOW_CONFIG,     # Timeout: 7min, Max retries: 2
-    PHONE_VALIDATION_RULES   # International format validation
-)
-```
-
-### **2. Utility Functions (`utils.py`)**
-
-Over 50 production-ready utility functions:
-
-#### **Phone & SMS Utilities**
-```python
-from saytoai_shared.utils import (
-    validate_phone_number,           # International validation
-    normalize_phone_number,          # Format standardization
-    generate_sms_code,              # 6-digit verification codes
-    determine_sms_delivery_method,   # Cost-optimized routing
-    enhanced_phone_validation       # Fraud detection included
-)
-
-# Example: Phone validation
-result = validate_phone_number("+998901234567")
-# Returns: {"is_valid": True, "normalized": "+998901234567", "country": "UZ"}
-```
-
-#### **Payment Processing**
-```python
-from saytoai_shared.utils import (
-    validate_payment_amount,         # Amount validation
-    format_payment_amount,           # Display formatting
-    calculate_credits_for_amount,    # Credit calculation
-    generate_payment_order_id,       # Unique order IDs
-    validate_payment_signature       # Provider signature validation
-)
-
-# Example: Payment validation
-result = validate_payment_amount(500000000, "UZS")  # 5M UZS in tiyin
-if result["is_valid"]:
-    credits = calculate_credits_for_amount(500000000)
-    print(f"Credits: {credits}")  # Based on tariff structure
-```
-
-#### **User Management**
-```python
-from saytoai_shared.utils import (
-    sanitize_username,              # Clean usernames
-    get_display_name,               # User-friendly names
-    get_user_flow_state,           # Onboarding progress
-    mask_sensitive_data,           # Privacy protection
-    validate_user_role_permissions  # Permission checking
-)
-
-# Example: Username sanitization
-clean = sanitize_username("  John.Doe123!  ")
-print(clean)  # "john.doe123"
-```
-
-#### **Security & Fraud Prevention**
-```python
-from saytoai_shared.utils import (
-    calculate_risk_score,           # Multi-factor risk assessment
-    analyze_ip_geolocation,         # Geographic analysis
-    validate_captcha,               # CAPTCHA verification
-    create_fraud_prevention_report, # Comprehensive reporting
-    check_ip_rate_limit            # Rate limiting
-)
-```
-
-### **3. Schema Models**
-
-#### **User Management (`schemas/user.py`)**
-```python
-from saytoai_shared.schemas.user import (
-    UserProfile,        # Complete user information
-    UserPreferences,    # Language, role, UI preferences
-    UserCredits,        # Credit balance and usage
-    UserSubscription,   # Subscription tiers and features
-    UserAuthentication  # Multi-method auth support
-)
-
-# Example: Create user profile
-user = UserProfile(
-    user_id=12345,
-    username="john_doe",
-    first_name="John",
-    last_name="Doe",
-    email="john@example.com",
-    phone="+998901234567",
-    role=UserRole.USER,
-    subscription_type=SubscriptionType.FREE
-)
-```
-
-#### **Payment Processing (`schemas/payments.py`)**
-```python
-from saytoai_shared.schemas.payments import (
-    PaymentTransaction,     # Complete transaction records
-    PaymentRequest,         # Payment initiation
-    PaymentResponse,        # Provider responses
-    PaymentWebhook,         # Webhook handling
-    CreditTransaction       # Credit balance changes
-)
-
-# Example: Payment transaction
-transaction = PaymentTransaction(
-    transaction_id="txn_123456",
-    user_id=12345,
-    amount=500000000,  # 5M UZS in tiyin
-    currency="UZS",
-    provider="payme",
-    status=PaymentStatus.COMPLETED,
-    credits_awarded=140
-)
-```
-
-#### **SMS Verification (`schemas/sms.py`)**
-```python
-from saytoai_shared.schemas.sms import (
-    SMSVerificationRequest,     # SMS request initiation
-    SMSVerificationResponse,    # Verification responses
-    SMSWorkflowStatus,          # Workflow state management
-    SMSDeliveryMethod,          # Delivery routing
-    BulkSMSRequest             # Bulk messaging
-)
-```
-
-### **4. AI Prompt Templates (`prompts.py`)**
-
-Context-specific AI prompt templates:
-
-```python
-from saytoai_shared.prompts import (
-    DEVELOPER_PROMPT,    # Technical content transcription
-    DESIGNER_PROMPT,     # Creative and design contexts
-    AI_CHAT_PROMPT      # General conversational AI
-)
-
-# Example: Get context-specific prompt
-from saytoai_shared.utils import get_default_prompt_for_context
-
-prompt = get_default_prompt_for_context("developer", "en")
-# Returns optimized prompt for developer context in English
-```
-
----
-
-## 🔄 **Integration Examples**
-
-### **Backend Integration (FastAPI)**
-
-```python
-# saytoai-backend/main.py
-from fastapi import FastAPI, HTTPException
-from saytoai_shared.schemas.user import UserProfile, UserProfileCreate
-from saytoai_shared.schemas.payments import PaymentRequest
-from saytoai_shared.utils import validate_phone_number, generate_payment_order_id
-from saytoai_shared.constants import PaymentStatus
-
-app = FastAPI()
-
-@app.post("/users/", response_model=UserProfile)
-async def create_user(user_data: UserProfileCreate):
-    # Validate phone number using shared utility
-    phone_validation = validate_phone_number(user_data.phone)
-    if not phone_validation["is_valid"]:
-        raise HTTPException(400, "Invalid phone number")
-    
-    # Create user with validated data
-    user = UserProfile(**user_data.dict())
-    return user
-
-@app.post("/payments/")
-async def create_payment(payment_data: PaymentRequest):
-    # Generate order ID using shared utility
-    order_id = generate_payment_order_id(
-        user_id=payment_data.user_id,
-        tariff=payment_data.tariff
-    )
-    
-    # Process payment with shared schemas
-    return {"order_id": order_id, "status": PaymentStatus.PENDING}
-```
-
-### **Telegram Bot Integration (aiogram)**
-
-```python
-# saytoai-bot/handlers/registration.py
-from aiogram import Router, types
-from saytoai_shared.schemas.sms import SMSVerificationRequest
-from saytoai_shared.utils import generate_sms_code, determine_sms_delivery_method
-from saytoai_shared.constants import SMS_CONFIGURATION
-
-router = Router()
-
-@router.message(commands=["register"])
-async def start_registration(message: types.Message):
-    phone = message.text.split()[1]  # Get phone from command
-    
-    # Generate verification code
-    code = generate_sms_code()
-    
-    # Determine delivery method (Telegram bot first, then SMS)
-    delivery_method = determine_sms_delivery_method(
-        user_id=message.from_user.id,
-        phone=phone
-    )
-    
-    if delivery_method == "telegram_bot":
-        await message.answer(f"Your verification code: {code}")
-    else:
-        # Send via external SMS (costs 95 som)
-        await send_external_sms(phone, code)
-        await message.answer("SMS sent to your phone")
-```
-
-### **Frontend Integration (React + TypeScript)**
-
-```typescript
-// saytoai-frontend/src/types/shared.ts
-// Generate TypeScript types from Pydantic models
-
-export interface UserProfile {
-  user_id: number;
-  username: string;
-  first_name?: string;
-  last_name?: string;
-  email?: string;
-  phone?: string;
-  role: 'admin' | 'user' | 'moderator';
-  subscription_type: 'free' | 'basic' | 'standard' | 'premium';
-}
-
-export interface PaymentRequest {
-  user_id: number;
-  amount: number;
-  currency: string;
-  tariff: 'basic' | 'standard' | 'premium';
-  provider: 'payme' | 'click';
-}
-
-// saytoai-frontend/src/utils/validation.ts
-export const validatePhoneNumber = (phone: string): boolean => {
-  // Use same validation logic as Python backend
-  const phoneRegex = /^\+[1-9]\d{6,14}$/;
-  return phoneRegex.test(phone);
-};
-```
-
----
-
-## 🛡️ **Security & Best Practices**
-
-### **Data Protection**
-- ✅ **Sensitive data masking** - PII protection utilities
-- ✅ **Input validation** - Comprehensive validation for all inputs
-- ✅ **Rate limiting** - IP-based and user-based limits
-- ✅ **Fraud detection** - Multi-factor risk assessment
-
-### **Payment Security**
-- ✅ **Signature validation** - Provider signature verification
-- ✅ **Amount validation** - Min/max limits enforcement
-- ✅ **Currency handling** - Precise tiyin-based calculations
-- ✅ **Audit trails** - Complete transaction logging
-
-### **Communication Security**
-- ✅ **SMS cost optimization** - Telegram bot first, SMS fallback
-- ✅ **Phone validation** - International format verification
-- ✅ **Code generation** - Cryptographically secure codes
-- ✅ **Delivery tracking** - Complete workflow monitoring
-
----
-
-## 📈 **Version History**
-
-### **v0.0.1 (2025-06-14)** - Initial Production Release
-- ✅ **Core functionality** - Complete user, payment, and SMS schemas
-- ✅ **voiceBot compatibility** - Payment system matches existing structure
-- ✅ **Comprehensive testing** - 45 tests with 100% pass rate
-- ✅ **Production ready** - Clean code, documentation, type hints
-- ✅ **Python 3.11+ support** - Modern Python compatibility
-
-### **Development Roadmap**
-- 🔄 **v0.1.0** - Enhanced fraud detection and ML integration
-- 🔄 **v0.2.0** - Advanced analytics and reporting utilities
-- 🔄 **v0.3.0** - Multi-language prompt templates expansion
-
----
-
-## 🤝 **Contributing**
-
-### **Development Setup**
+### **Setup Development Environment**
 
 ```bash
 # Clone repository
 git clone https://github.com/saytoai-org/saytoai-shared.git
 cd saytoai-shared
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or
-venv\Scripts\activate     # Windows
+# Install with development dependencies
+pip install -e ".[dev,testing]"
 
-# Install development dependencies
-pip install -e ".[dev,testing,docs]"
+# Install pre-commit hooks
+pre-commit install
 
-# Run tests
-pytest tests/ -v
-
-# Code quality checks
-ruff check saytoai_shared/
-mypy saytoai_shared/
-black saytoai_shared/
+# Run initial quality checks
+ruff check .
+pytest tests/
 ```
 
-### **Contribution Guidelines**
+### **Project Structure Rules**
 
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. **Write tests** for new functionality
-4. **Ensure** all tests pass: `pytest tests/`
-5. **Check** code quality: `ruff check saytoai_shared/`
-6. **Commit** changes: `git commit -m 'Add amazing feature'`
-7. **Push** to branch: `git push origin feature/amazing-feature`
-8. **Create** a Pull Request
+1. **No Duplicate Functions**: Each utility function has a single implementation
+2. **Clear Separation**: Schemas, services, and utilities are properly separated
+3. **Consistent Imports**: All imports follow established patterns
+4. **Type Safety**: Full type hints coverage with `py.typed` marker
+5. **Clean Repository**: Cache files and build artifacts are excluded
 
-### **Code Standards**
-- ✅ **Type hints** - All functions must have type annotations
-- ✅ **Docstrings** - Comprehensive documentation for all public APIs
-- ✅ **Tests** - Minimum 90% test coverage for new code
-- ✅ **Linting** - Code must pass ruff and mypy checks
-- ✅ **Formatting** - Use Black for consistent code formatting
+### **Adding New Features**
+
+1. **Add Function**: Implement in appropriate module (`utils.py`, `constants.py`, etc.)
+2. **Add Schema**: Create Pydantic model in relevant schema file
+3. **Add Tests**: Write tests in corresponding test file
+4. **Update Exports**: Add to `__init__.py` for public API access
+5. **Update Documentation**: Add examples and usage to README
 
 ---
 
-## 📞 **Support & Contact**
+## 📚 **API Reference**
 
-### **Documentation**
-- 📚 **API Reference** - Complete function and class documentation
-- 🎯 **Examples** - Real-world usage examples and patterns
-- 🔧 **Integration Guides** - Service-specific integration instructions
+### **Core Utilities** 
 
-### **Community**
-- 🐛 **Issues** - [GitHub Issues](https://github.com/saytoai-org/saytoai-shared/issues)
-- 💬 **Discussions** - [GitHub Discussions](https://github.com/saytoai-org/saytoai-shared/discussions)
-- 📧 **Email** - support@saytoai.org
+#### **Phone & SMS Functions**
+```python
+validate_phone_number(phone: str) -> Dict[str, Any]
+# Validates international phone numbers
+# Returns: {"is_valid": bool, "formatted_phone": str, "message": str}
 
-### **License**
+generate_sms_code(length: int = 6) -> str
+# Generates secure verification codes
+# Returns: 6-digit numeric code
+
+format_sms_message(template_key: str, **kwargs) -> str
+# Formats SMS using predefined templates
+# Auto-truncates to 160 characters
+```
+
+#### **Alert Formatting Functions** (NEW!)
+```python
+format_alert_message(alerts: list, alert_type: str = "GENERAL", max_length: int = 4000) -> str
+# Formats multiple alerts with proper structure and icons
+# Handles truncation and provides alert count
+
+format_container_alert_message(container_names: list, alert_type: str, severity: str) -> str
+# Specialized formatting for container alerts
+# Groups similar containers and provides summary
+```
+
+#### **Payment Functions**
+```python
+validate_payment_amount(amount: int, currency: str) -> Dict[str, Any]
+# Validates payment amounts against configured limits
+# Returns: {"is_valid": bool, "formatted_amount": str, "message": str}
+
+format_payment_amount(amount: int, currency: str) -> str
+# Formats payment amounts with proper currency display
+# Handles tiyin conversion for UZS currency
+```
+
+### **Schema Classes**
+
+#### **User Management**
+```python
+UserProfile(BaseModel)
+# Complete user profile with preferences and subscription info
+
+UserPreferences(BaseModel)
+# User settings for language, notifications, etc.
+
+UserCredits(BaseModel)
+# Credit management for different service tiers
+```
+
+#### **Authentication**
+```python
+UserRegistration(BaseModel)
+# User registration with multiple verification methods
+
+LoginRequest(BaseModel)
+# User login with email/phone support
+
+PasswordResetRequest(BaseModel)
+# Password reset workflow management
+```
+
+#### **SMS Services**
+```python
+SMSVerificationRequest(BaseModel)
+# SMS verification request with purpose tracking
+
+SMSVerificationResponse(BaseModel)
+# Comprehensive SMS response with delivery info
+
+BulkSMSRequest(BaseModel)
+# Bulk SMS sending for marketing/notifications
+```
+
+---
+
+## 🤝 **Contributing**
+
+### **Development Workflow**
+
+1. **Fork** the repository
+2. **Create** feature branch: `git checkout -b feature/amazing-feature`
+3. **Write** code with tests
+4. **Run** quality checks: `ruff check . && pytest`
+5. **Commit** changes: `git commit -m 'Add amazing feature'`
+6. **Push** to branch: `git push origin feature/amazing-feature`
+7. **Open** Pull Request
+
+### **Code Standards**
+
+- **Python 3.11+** compatibility required
+- **Type hints** for all functions and classes
+- **Pydantic v2** for all data models
+- **100% test coverage** for new features
+- **Clear documentation** with examples
+- **No breaking changes** without version bump
+
+### **Review Process**
+
+- All PRs require code review
+- Automated tests must pass
+- Code quality checks must pass
+- Documentation must be updated
+- Backward compatibility maintained
+
+---
+
+## 📄 **License**
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Made with ❤️ by the SayToAI Team** | **© 2025 SayToAI. All rights reserved.** 
+## 📞 **Support**
+
+- **Documentation**: This README and inline code comments
+- **Issues**: [GitHub Issues](https://github.com/saytoai-org/saytoai-shared/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/saytoai-org/saytoai-shared/discussions)
+- **Email**: support@saytoai.org
+
+---
+
+## 🎯 **Version History**
+
+### **v0.0.1** (Current)
+- ✅ Initial package structure
+- ✅ Core utilities and schemas
+- ✅ SMS service implementation
+- ✅ Payment processing utilities
+- ✅ Comprehensive test suite
+- ✅ **Alert formatting optimization** (January 2025)
+- ✅ **SMS message optimization** (January 2025)
+- ✅ **Package structure cleanup** (January 2025)
+
+### **Upcoming Features**
+- 🔄 Advanced fraud detection algorithms
+- 🔄 Enhanced payment gateway integrations
+- 🔄 Real-time notification streaming
+- 🔄 ML-powered user behavior analysis
+
+---
+
+**Built with ❤️ by the SayToAI Team** | **Production Ready** ✅ 
